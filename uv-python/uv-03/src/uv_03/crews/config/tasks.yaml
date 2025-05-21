@@ -1,0 +1,6 @@
+describe_topic:
+  description: >
+    "We are mentoring the best Agentic AI Engineers. Today we teach {topic}"
+  expected_output: >
+    "The student will be master of the {topic}"
+  agent: sir_zia

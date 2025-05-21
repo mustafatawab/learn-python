@@ -1,0 +1,21 @@
+[project]
+name = "uv-03"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "mustafatawab", email = "engrmustafatawab05@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "crewai",
+    "litellm>=1.68.0",
+]
+
+[project.scripts]
+uv-03 = "uv_03:main"
+crewai = "uv_03.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

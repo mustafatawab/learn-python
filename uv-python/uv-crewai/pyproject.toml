@@ -1,0 +1,22 @@
+[project]
+name = "uv-crewai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "mustafatawab", email = "engrmustafatawab05@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "crewai>=0.118.0",
+    "litellm>=1.67.1",
+]
+
+[project.scripts]
+uv-crewai = "uv_crewai:main"
+simple = "uv_crewai.main:kickoff"
+chain = "uv_crewai.main1:kickoff"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
