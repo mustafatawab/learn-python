@@ -9,4 +9,4 @@ async def handle_message(message : cl.Message):
 
 `uv run chainlit hello`
 
-`uv run chainlit run hello.py`
+`uv run chainlit run hello.py -w`
