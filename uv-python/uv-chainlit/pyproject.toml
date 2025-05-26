@@ -1,0 +1,21 @@
+[project]
+name = "uv-chainlit"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "mustafatawab", email = "engrmustafatawab05@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "chainlit>=2.5.5",
+    "dotenv>=0.9.9",
+    "openai-agents>=0.0.16",
+]
+
+[project.scripts]
+uv-chainlit = "uv_chainlit:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
