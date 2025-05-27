@@ -18,6 +18,8 @@ class American:
   weight : float
   liked_food : str  
 
+  
+
   def eat(self):
     print(f"{self.name} is eating")
 
