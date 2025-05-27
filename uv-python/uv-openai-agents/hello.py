@@ -1,5 +1,5 @@
 import chainlit as cl # type: ignore
-from agents import WebSearchTool,Agent, RunConfig , AsyncOpenAI , OpenAIChatCompletionsModel, Runner, function_tool #type: ignore
+from agents import WebSearchTool, FileSearchTool, Agent, RunConfig , AsyncOpenAI , OpenAIChatCompletionsModel, Runner, function_tool #type: ignore
 from dotenv import load_dotenv , find_dotenv #type: ignore
 from openai.types.responses import ResponseTextDeltaEvent # type: ignore
 import os
@@ -40,7 +40,10 @@ run_config = RunConfig(
 agent = Agent(
     instructions="You are helpful assitant  than can answer questions",
     name='General Assistant',
-    tools=[get_weather]
+    tools=[get_weather, WebSearchTool(),  FileSearchTool(
+            max_num_results=3,
+            vector_store_ids=["VECTOR_STORE_ID"],
+        ),]
 )
 
 
