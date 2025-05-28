@@ -12,7 +12,7 @@ gemini_api_key = os.getenv("GEMINI_API_KEY")
 @function_tool("get_weather")
 def get_weather(location : str) -> str:
 
-    """" 
+    """
         Find the weather of given location in Degree Calcius or something like this
     """
     return f"the weather of {location}  is 22 degree"
