@@ -18,3 +18,7 @@
 * User want from the Agent to generate or do so work
 
 ![Open AI Agent SDK](openai-agent-sdk.png)
+
+
+## Email Agent Mindmap
+![Email Agent Mindmap](email_agent_mindmap.png)
