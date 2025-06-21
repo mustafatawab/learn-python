@@ -1,3 +1,5 @@
-# a : int = "21"
-# print(a)
+import pprint
 
+x : int = 12
+
+pprint.pprint(x)

@@ -17,7 +17,7 @@
 ### User Prompt
 * User want from the Agent to generate or do so work
 
-![Open AI Agent SDK](openai-agent-sdk.png)
+![Open AI Agent SDK](openai_agent_sdk/openai-agent-sdk.png)
 
 
 ## Email Agent Mindmap
