@@ -1,0 +1,16 @@
+[project]
+name = "hello-world"
+version = "0.1.0"
+description = "Hello World to the fast api"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.115.14",
+    "openai-agents>=0.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+]
