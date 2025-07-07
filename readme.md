@@ -33,7 +33,7 @@ Three Main Features of OpenAI Agent SDK
 * **Python First** 
 * **Handoffs**: Delegate task between agents
 * **Guardrails**: Input and Output Validation and Check in parallel to your agent
-* **Function Tools**
+* **Function Tools**: External Resources and tools like Web Search
 * **Tracing**
 
 
@@ -42,8 +42,6 @@ Three Main Features of OpenAI Agent SDK
 We can send LLM **Plain Text** and Which **Tool Cal**
 1. User Prompt 
     ```python
-
-        
         await Runner.run(agent , "What is decorator in python")
 
         Runner.run_sync(agent , "What is decorator in python")
@@ -59,17 +57,23 @@ We can send LLM **Plain Text** and Which **Tool Cal**
             if event.type == 'raw_response_event' and isinstance(event.data, ResponseTextDeltaEvent):
                 print(f"\n[DATA] {event.data.delta}") 
      ```
-2. System Prompt (Agent Persona = How an agent will behave)
+2. System Prompt (**Agent Persona** = How an agent will behave)
     ```python
     Agent(name='Instructor' , instructions='You are an instructor of python' , model='', tools=[get_weather])
     ```
 3. Tool Scheema
     ```python
     from agents import function_tool
+    # We can use built in tools like WebSearch , FileSearch etc but you need OpenAI API Key
 
     @function_tool
     def get_weather(city: str) -> str:
         return f"Nice weather at {city}"
+
+    # is_enabled=False then it will not be used by the Agent. Use case is like maintainance working
+    @function_tool(is_enabled=False)
+    def customTool(x:str)->str:
+        return x
     ```
 4. Final output
 
@@ -88,7 +92,11 @@ class UserContext(BaseModel):
     age: int
     university: str
 
-Agent[UserContext](...) 
+Agent[UserContext](...)
+
+user=UserContext(name='Mustafa' , age=25, university='UOL')
+
+Runner.run_sync(agent , input='user message', context=user)
 ```
 
 
@@ -97,6 +105,7 @@ Instructions send dynamically. It is system prompt.
 ```python
 from agents import RunContextWrapper
 
+# First Must be Context and second Agent in the parameter
 def dynamic_instructions(context: RunContextWrapper[UserContext], agent: Agent[UserContext])->str:
     return f"The user name is {context.context.name} and age is {context.context.age} enrolled in {context.context.university}"
 
@@ -126,7 +135,8 @@ robot_agent = pirate_agent.clone(
 
 ### Forcing Tool Use (settings & Tools configuration)
 ```python
-from agents import ModelSettins
+from agents import ModelSettings
+from agents.agent import StopAtTools
 
 Agent(
     name='Haiku Agent',
