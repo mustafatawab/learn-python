@@ -1,4 +1,4 @@
-## Learn Python ##
+## Learn Agentic AI using ***OPENAI AGENT SDK*** ##
 
 
 * Agent is an LLM call
@@ -35,6 +35,8 @@ Three Main Features of OpenAI Agent SDK
 * **Guardrails**: Input and Output Validation and Check in parallel to your agent
 * **Function Tools**
 * **Tracing**
+
+
 
 
 We can send LLM **Plain Text** and Which **Tool Cal**
@@ -74,4 +76,69 @@ We can send LLM **Plain Text** and Which **Tool Cal**
 By Default the Agent SDK user gpt-4o when you set the OPENAI_API_KEY.
 
 We can connect built-in tools mentioned in the [docs](https://openai.github.io/openai-agents-python/tools/) just with the openai key. 
+
+
+### Context 
+Instructions which we want to send to agent.
+```python
+
+from pydantic import BaseModel
+class UserContext(BaseModel):
+    name: str
+    age: int
+    university: str
+
+Agent[UserContext](...) 
+```
+
+
+### Dynamic Instructions 
+Instructions send dynamically. It is system prompt.
+```python
+from agents import RunContextWrapper
+
+def dynamic_instructions(context: RunContextWrapper[UserContext], agent: Agent[UserContext])->str:
+    return f"The user name is {context.context.name} and age is {context.context.age} enrolled in {context.context.university}"
+
+
+Agent[UserContext](name="Triage Agent" , instructions=dynamic_instructions) 
+
+```
+
+### Cloning
+
+```python
+pirate_agent = Agent(
+    name='Pirate',
+    instructions='Write like a pirate',
+    model='03-mini'
+)
+
+
+robot_agent = pirate_agent.clone(
+    name="Robot",
+    instructions='Write like a robot'
+)  
+
+# this will clone the previous agent and can override properties like here I override the name and instructions. And the model will the name as the pirate_agent
+
+```
+
+### Forcing Tool Use (settings & Tools configuration)
+```python
+from agents import ModelSettins
+
+Agent(
+    name='Haiku Agent',
+    instructions="Always respond in haiku",
+    tools=[get_weather],
+    model_settings=ModelSettings(tool_choice="none", parallel_tool_use=False) # tool_choice=[none, required , auto]  
+    reset_tool_choice=False, # Default True
+    # tool_user_behavior='run_llm_again', # Default
+    tool_user_behavior=StopAtTools(stop_at_tool_names=['get_support_details']),
+)
+
+Runner.run_sync(agent, "Your message" , max_turns=4)
+
+```
 
