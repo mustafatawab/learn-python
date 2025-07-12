@@ -152,3 +152,91 @@ Runner.run_sync(agent, "Your message" , max_turns=4)
 
 ```
 
+
+
+### Handoffs
+
+```python
+from agents import Agent, handoff
+from agents.extensions import handoff_filters
+
+billing_agent = Agent(name='Billing Agent')
+refund_agent = Agent(name='Refund Agent')
+
+general_agent = Agent(
+    name='General Agent',
+    handoff=[
+        handoff(
+            agent=billing_agent, 
+            tool_name_override="refund_order", 
+            tool_description_override="Handles a refund request", 
+            is_enabled=True, # this is also callable which means we can pass custom function 
+            input_filter=handoff_filters.remove_all_tools # input_filters -> we can pass custom function
+        ), 
+        handoff(agent=refund_agent)
+    ]
+)
+
+```
+____
+
+
+```python
+
+class CurrentUser(BaseModel):
+    is_logged_in: bool 
+
+def can_customer_refund(local_context: RunContextWrapper[CurrentUser], agent: Agent[CurrentUser]) -> bool:
+    print("Local context " , local_context)
+    print("Agent  " , agent)
+    if local_context.context and local_context.context.is_logged_in:
+        return False
+    return True
+
+billing_agent = Agent(name='Billing Agent')
+
+agent = Agent(
+    name="General Agent",
+    handoffs=[
+        handoff(
+            agent=billing_agent,
+            is_enabled=can_customer_refund
+        )
+    ]
+)
+
+def main():
+    current_user = CurrentUser(is_logged_in=True)
+
+    run = await Runner.run(
+        agent,
+        """ I want to refund my order  """,
+        context=current_user
+    )
+
+    print(run.final_output)
+    print(run.last_agent.name)
+    
+
+```
+
+
+____
+
+
+
+
+### Costumization of Runner
+```python
+from agents.run import AgentRunner , set_default_agent_runner
+
+
+class CustomRunner(AgentRunner):
+    async def run(self, starting_agent, input, **kwargs):
+        return await super().run(starting_agent, input, **kwargs)
+
+set_default_agent_runner(CustomRunner())
+
+
+
+```
