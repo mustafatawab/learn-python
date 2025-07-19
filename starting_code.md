@@ -1,4 +1,10 @@
-### Boiler Plat Code for the Agent with GEMINI
+### Boiler Plat Code for the OpenAI Agent SDK with GEMINI
+
+```cmd
+pip install -Uq open-agents | pip install -Uq "openai-agents[litellm]"
+
+uv add openai-agents
+```
 
 ```python
 from agents import Agent, Runner, AsyncOpenAI , OpenAIChatCompletionModel, function_tool , RunConfig, ModelSettings
