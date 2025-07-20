@@ -29,3 +29,20 @@ Three waves of AI
     2. Cloud First
     3. Develop Anywhere
     4. Cloud/Deploy Anywheres
+
+
+
+**OpenAI Chat Completion's API** ***(Stateless)***
+    * Standardized and adapted by the world wide
+    * 
+
+**OpenAI Responses API** ***(Stateful, tool-ready)***
+    * server store user history
+    * Bult-in tools
+        * Web Search
+        * File Retrieval
+        * Code interpreter
+        * Image Generation
+    * OpenAI Agent SDK use built in reponses api but you can use chat completions api too if you want
+    
+
