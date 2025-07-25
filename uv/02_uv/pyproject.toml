@@ -1,19 +1,20 @@
 [project]
-name = "uv-02"
+name = "uv-03"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 authors = [
     { name = "mustafatawab", email = "engrmustafatawab05@gmail.com" }
 ]
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.11"
+dependencies = [
+    "crewai",
+    "litellm>=1.68.0",
+]
 
 [project.scripts]
-uv-02 = "uv_02:main"
-karachi = "uv_02.hello:printDict"
-
-piaic = "uv_02.piaic.file:piaic"
+uv-03 = "uv_03:main"
+crewai = "uv_03.main:main"
 
 [build-system]
 requires = ["hatchling"]

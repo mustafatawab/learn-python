@@ -1,5 +1,5 @@
 [project]
-name = "uv-03"
+name = "01-openrouter"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,13 +8,12 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
-    "crewai",
-    "litellm>=1.68.0",
+    "openai-agents>=0.0.19",
 ]
 
 [project.scripts]
-uv-03 = "uv_03:main"
-crewai = "uv_03.main:main"
+01-openrouter = "01_openrouter:main"
+
 
 [build-system]
 requires = ["hatchling"]
