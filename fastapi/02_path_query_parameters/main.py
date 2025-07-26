@@ -40,9 +40,9 @@ def get_all_users(limit: int | None = Query(..., gt=0, lt=150)): # Query Paramte
             [ 
                 {"name" : "Mustafa Tawab"}, 
                 { "name" : "Jamal"} 
-            ]
-    }
-
+            ]                    
+    }   
+    
 
 @app.get("/product/{product_name}")
 def product_details(

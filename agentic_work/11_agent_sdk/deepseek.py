@@ -6,23 +6,22 @@ import nest_asyncio
 
 load_dotenv()
 
-gemini_key = os.getenv("GEMINI_API_KEY")
-
-if not gemini_key:
-    raise ValueError("Please set gemini api key")
+deepseek_key = os.getenv("DEEPSEEK_API_KEY")
 
 
-gemini_base_url='https://generativelanguage.googleapis.com/v1beta/openai/'
-gemini_model='gemini-2.0-flash'
+if not deepseek_key:
+    raise ValueError("Please set deekseek api key")
+
+
 
 
 external_client: AsyncOpenAI = AsyncOpenAI(
-    api_key=gemini_key,
-    base_url=gemini_base_url
+    api_key=deepseek_key,
+    base_url="https://api.deepseek.com"
 )
 
 model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
-    model=gemini_model,
+    model="deepseek-chat",
     openai_client=external_client
 )
 
