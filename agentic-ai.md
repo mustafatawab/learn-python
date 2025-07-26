@@ -44,5 +44,5 @@ Three waves of AI
         * Code interpreter
         * Image Generation
     * OpenAI Agent SDK use built in reponses api but you can use chat completions api too if you want
-    
+
 
