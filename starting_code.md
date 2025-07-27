@@ -6,6 +6,12 @@ pip install -Uq open-agents | pip install -Uq "openai-agents[litellm]"
 uv add openai-agents
 ```
 
+
+### OpenAI Agent SDK Model Configuration
+* Global Level
+* Run Level
+* Agent Level
+
 **Agent Level**
 ```python
 from agents import Agent, Runner, AsyncOpenAI , OpenAIChatCompletionModel, function_tool , RunConfig, ModelSettings
