@@ -6,6 +6,7 @@ pip install -Uq open-agents | pip install -Uq "openai-agents[litellm]"
 uv add openai-agents
 ```
 
+**Agent Level**
 ```python
 from agents import Agent, Runner, AsyncOpenAI , OpenAIChatCompletionModel, function_tool , RunConfig, ModelSettings
 from dotenv import load_dotenv
@@ -65,3 +66,57 @@ print(run.funal_output)
 ```
 
 
+**Run Level**
+```python
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel
+from agents.run import RunConfig
+
+gemini_api_key = ""
+
+#Reference: https://ai.google.dev/gemini-api/docs/openai
+external_client = AsyncOpenAI(
+    api_key=gemini_api_key,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+
+model = OpenAIChatCompletionsModel(
+    model="gemini-2.0-flash",
+    openai_client=external_client
+)
+
+config = RunConfig(
+    model=model,
+    model_provider=external_client,
+    tracing_disabled=True
+)
+
+agent: Agent = Agent(name="Assistant", instructions="You are a helpful assistant")
+
+result = Runner.run_sync(agent, "Hello, how are you.", run_config=config)
+
+print(result.final_output)
+
+```
+
+
+**Global Level**
+```python
+
+from agents import Agent, Runner, AsyncOpenAI, set_default_openai_client, set_tracing_disabled, set_default_openai_api
+
+gemini_api_key = ""
+set_tracing_disabled(True)
+set_default_openai_api("chat_completions")
+
+external_client = AsyncOpenAI(
+    api_key=gemini_api_key,
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+)
+set_default_openai_client(external_client)
+
+agent: Agent = Agent(name="Assistant", instructions="You are a helpful assistant", model="gemini-2.0-flash")
+
+result = Runner.run_sync(agent, "Hello")
+
+print(result.final_output)
+```

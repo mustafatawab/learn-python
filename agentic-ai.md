@@ -7,9 +7,11 @@ Three waves of AI
 1. Predictive AI
     * Predict based upon the data
     * Analyze past data to predict future outcomes
+    * example : Is this is cat or not?
 2. Generative AI
     * Generating Content (Text , Images, Code , Video)
     * Content Creator
+    * example: Can generate text about cat
 3. Agentic AI
     * A bot on your behaf.
     * Autonomous actions and learning iteratively.
@@ -44,5 +46,7 @@ Three waves of AI
         * Code interpreter
         * Image Generation
     * OpenAI Agent SDK use built in reponses api but you can use chat completions api too if you want
+
+
 
 

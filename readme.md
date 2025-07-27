@@ -61,7 +61,7 @@ We can send LLM **Plain Text** and Which **Tool Cal**
     ```python
     Agent(name='Instructor' , instructions='You are an instructor of python' , model='', tools=[get_weather])
     ```
-3. Tool Scheema
+3. Custom Tool Scheema
     ```python
     from agents import function_tool
     # We can use built in tools like WebSearch , FileSearch etc but you need OpenAI API Key
