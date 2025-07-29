@@ -93,7 +93,7 @@ async def get_single_todo(id: int, session: Annotated[Session, Depends(get_sessi
 
 @app.put('/todos/{id}' , response_model=Todo)
 async def edit_todo(id: int , todo: Todo , session: Annotated[Session, Depends(get_session)]):
-    existing_todo = session.exect(select(Todo).where(Todo.id == id)).first()
+    existing_todo = session.exec(select(Todo).where(Todo.id == id)).first()
     if existing_todo:
         existing_todo.content = todo.content
         existing_todo.is_completed = todo.is_completed
