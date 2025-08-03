@@ -142,7 +142,7 @@ Agent(
     name='Haiku Agent',
     instructions="Always respond in haiku",
     tools=[get_weather],
-    model_settings=ModelSettings(tool_choice="none", parallel_tool_use=False) # tool_choice=[none, required , auto]  
+    model_settings=ModelSettings(temperature=1, tool_choice="none", parallel_tool_use=False) # tool_choice=[none, required , auto]  
     reset_tool_choice=False, # Default True
     # tool_user_behavior='run_llm_again', # Default
     tool_user_behavior=StopAtTools(stop_at_tool_names=['get_support_details']),
