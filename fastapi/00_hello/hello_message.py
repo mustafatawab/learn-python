@@ -22,4 +22,4 @@ def addition(a, b):
 
 
 if __name__ == "__main__":
-    call_addition()
+    addition()

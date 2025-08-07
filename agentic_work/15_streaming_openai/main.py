@@ -65,20 +65,15 @@ async def main():
     context = LocalContext(name='travel agent' , tone='friendly')
     result: Runner =  Runner.run_streamed(
         agent ,
-        "Hi, How are you",
+        "Hi, How are you. Search about FastAPI and lemme know what can i build on it",
         run_config=run_config,
         context=context
     )
 
     async for event in result.stream_events():
-        # print("\n")
-        # print(event)
-        if event.type == "raw_reponse_event" and isinstance(event.data, ResponseTextDeltaEvent):
-            print(event.data.delta, end="" , flush=True)
-        # if event.item.type == "tool_call_output_item":
-        #     print(f"Tool output: {event.item.output}")
-        # elif event.item.type == "message_output_item":
-        #     print(ItemHelpers.text_message_output(event.item))
+        if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
+            print(event.data.delta, end="", flush=True)
+
 
 
 
