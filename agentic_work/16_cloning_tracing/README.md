@@ -1,0 +1,1 @@
+Use OpenAI Key for tracing not for LLMS. Use Gemini models for your agent brain. 
