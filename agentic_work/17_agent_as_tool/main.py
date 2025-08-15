@@ -22,15 +22,26 @@ llm_model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
 )
 
 
+scientis_agent: Agent = Agent(
+    name='scientist',
+    model=llm_model,
+    instructions="You are a scientist that can answer questions and help with tasks.",
+)
+
+
 agent: Agent = Agent(
     name="agent",
     model=llm_model,
     instructions="You are a helpful assistant that can answer questions and help with tasks.",
+    tools=[scientis_agent.as_tool(
+        tool_name="scientist_tool",
+        tool_description="A tool that can answer questions and help with tasks.",
+    )]
 )
 
 result: Runner = Runner.run_sync(
     agent,
-    "Hi, What is your name and how you feel today?"
+    "Hi, Can you please research on modern web technologies and their impact on the future of the web?"
 )
 
 print(result.final_output)
