@@ -75,12 +75,25 @@ We can send LLM **Plain Text** and Which **Tool Cal**
     def customTool(x:str)->str:
         return x
     
-    def is_allowed_tool(context: RunContextWrapper, agent: Agent) -> bool:
+    ```
+
+    ```python
+    from agents import AgentBase, RunContextWrapper
+    from dataclasses import dataclass
+
+    @dataclass
+    class UserScope:
+        is_admin: bool
+
+    def is_allowed_tool(context: RunContextWrapper[UserScope], agent: AgentBase[UserScope]) -> bool:
         # Some logic
-        return True
+        return True if context.context.is_admin else False
+
     @function_tool(is_enabled=is_allowed_tool)
     def myTool() -> str:
         return "My Tool"
+    user_context= UserScope(is_admin=True)
+    Runner.run_sync(agent , "call custom tool" , context=user_context)
     ```
 4. Final output
 
