@@ -61,7 +61,7 @@ We can send LLM **Plain Text** and Which **Tool Cal**
     ```python
     Agent(name='Instructor' , instructions='You are an instructor of python' , model='', tools=[get_weather])
     ```
-3. Custom Tool Scheema
+3. Custom Tool Scheema and advance tools
     ```python
     from agents import function_tool
     # We can use built in tools like WebSearch , FileSearch etc but you need OpenAI API Key
@@ -71,9 +71,16 @@ We can send LLM **Plain Text** and Which **Tool Cal**
         return f"Nice weather at {city}"
 
     # is_enabled=False then it will not be used by the Agent. Use case is like maintainance working
-    @function_tool(is_enabled=False)
+    @function_tool(is_enabled=False, name_override='custome_tool' , description_override="custome tool description")
     def customTool(x:str)->str:
         return x
+    
+    def is_allowed_tool(context: RunContextWrapper, agent: Agent) -> bool:
+        # Some logic
+        return True
+    @function_tool(is_enabled=is_allowed_tool)
+    def myTool() -> str:
+        return "My Tool"
     ```
 4. Final output
 
