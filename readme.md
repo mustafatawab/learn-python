@@ -95,6 +95,15 @@ We can send LLM **Plain Text** and Which **Tool Cal**
     user_context= UserScope(is_admin=True)
     Runner.run_sync(agent , "call custom tool" , context=user_context)
     ```
+
+    ```python
+    from agents import FunctionTool
+
+    def get_weather(city: str) -> str:
+        return "The weather in " + city + " is awesome
+    
+    FunctionTool(name="get_weather" , on_invoke=get_weather , description='Get the weather of the city')
+    ```
 4. Final output
 
 By Default the Agent SDK user gpt-4o when you set the OPENAI_API_KEY.
