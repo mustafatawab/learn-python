@@ -17,7 +17,7 @@ if not deepseek_key:
 
 external_client: AsyncOpenAI = AsyncOpenAI(
     api_key=deepseek_key,
-    base_url="https://api.deepseek.com"
+    base_url="https://api.deepseek.com/v1"
 )
 
 model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
