@@ -87,6 +87,7 @@ agent: Agent = Agent(
 
 context = Instructions(instruction="You are a main agent that will plan, research, and reflect the user's request.")
 
+
 result: Runner = Runner.run_sync(
     agent,
     input('What is your request? '),

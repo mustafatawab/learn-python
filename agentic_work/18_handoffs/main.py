@@ -1,7 +1,8 @@
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, function_tool, handoff, RunContextWrapper
 from dotenv import load_dotenv
 import os
 import asyncio
+from dataclasses import dataclass, field
 
 load_dotenv()
 
@@ -20,30 +21,64 @@ model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
     openai_client=client
 )
 
-billing_agent: Agent = Agent(
-    name="Billing Agent",
-    instructions="You are a billing assistant. You can help users with billing inquiries.",
+@dataclass
+class Products:
+    products: list[str] = field(default_factory=lambda:["Watch", "Phone", "Laptop", "Tablet" , "Headphones" , "Charger " , "Camera" , "Speaker" , "Monitor" , "Keyboard"])
+
+
+
+@function_tool
+async def get_order_status(wrapper: RunContextWrapper[Products] , order_id: str) -> str:
+    """ Get the status of an order by its ID."""
+    return f"Order {order_id} is currently being processed."
+
+order_tracking_agent: Agent = Agent(
+    name="Order Tracking Agent",
+    instructions="You are an order tracking assistant. You can help users track their orders.",
+    model=model,
+    tools=[get_order_status]
+)
+
+product_inquiry_agent: Agent = Agent(
+    name="Product Inquiry Agent",
+    instructions="Answer questions about products details , specifications  and their availability.",
     model=model
 )
 
-refund_agent: Agent = Agent(
-    name="Refund Agent",
-    instructions="You are a refund assistant. You can help users with refund inquiries.",
-    model=model
+support_agent: Agent = Agent(
+    name="Support Agent",
+    instructions="You are a support agent. You can assist users with general inquiries.",
+    model=model,
 )
+
+
+def agent_instructions(wrapper: RunContextWrapper[Products] , agent: Agent) -> str:
+    """Provide instructions for the main agent."""
+    print(f"Context products: {wrapper.context.products}")
+    return (
+        f"All prouducts are {wrapper.context.products}. "
+        f"You can assist users with general inquiries. "
+        f"Your name is {agent.name}. "
+
+    )
+
+
+all_products = ["Watch", "Phone", "Laptop", "Tablet" , "Headphones" , "Charger " , "Camera" , "Speaker" , "Monitor" , "Keyboard"]
+product = Products(products=all_products)
 
 async def main()->None:
 
     main_agent: Agent = Agent(
         name="Main Agent",
-        instructions="You are the main agent. You can assist users with general inquiries. You will listen to the billing and refund agents.",
+        instructions=agent_instructions,
         model=model,
-        handoffs=[billing_agent, refund_agent]
+        handoffs=[handoff(support_agent) , handoff(order_tracking_agent) , handoff(product_inquiry_agent)],
     )
 
     result : Runner = await Runner.run(
         main_agent,
-        "I need billing unit price information in pakistan for the commercial sector."
+        input("Enter your prompt about order tracking, product inquiries, or support: "),
+        context=product
     )
 
     print(result.final_output)
