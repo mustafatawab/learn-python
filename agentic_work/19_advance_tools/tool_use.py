@@ -1,9 +1,8 @@
-from agents import AsyncOpenAI, OpenAIChatCompletionsModel , Agent, Runner, function_tool, RunContextWrapper, ItemHelpers
+from agents import ModelSettings, AsyncOpenAI, OpenAIChatCompletionsModel ,StopAtTools, Agent, Runner, function_tool, RunContextWrapper, ItemHelpers
 from openai.types.responses import ResponseTextDeltaEvent
 from dotenv import load_dotenv
 import asyncio
 import os
-from agents.run import RunConfig
 
 # Load environment variables from .env file
 load_dotenv()
@@ -18,7 +17,7 @@ client = AsyncOpenAI(
 )
 
 model = OpenAIChatCompletionsModel(
-    client=client,
+    openai_client=client,
     model="gemini-1.5-flash",
 )
 
@@ -35,17 +34,26 @@ def get_weather(location: str) -> str:
     return f"The current weather in {location} is sunny with a temperature of 25°C."
 
 
+
+@function_tool
+def web_search(query: str) -> str:
+    """ Perform web search over the internet"""
+    return f"The user asks about {query}"
+
 agent :Agent = Agent(
-    name='helpful_agent',
+    name='helpful_Assistant',
     instructions="You are a helpful assistant that can answer questions and perform tasks.",
     model=model,
-    tools=[get_current_time, get_weather],
+    model_settings=ModelSettings(temperature=1),
+    tools=[get_weather, web_search, get_current_time],
+    tool_use_behavior=StopAtTools(stop_at_tool_names=["get_weather", "web_search"]) # run_llm_again , stop_on_first_tool, StopAtTools(stop_at_tool_names=["your_tool"])
 )
 
 async def main() -> None:
     result: Runner = await Runner.run(
         agent, 
-        "What current time and wather in Pakistan"
+        "Can you please search best agentic ai tools? Also lemme know what is the weather in Tokyo right now. Try it atleast 5 times",
+        max_turns=1
     )
 
     print(result.final_output)
