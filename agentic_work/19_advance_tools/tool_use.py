@@ -44,7 +44,12 @@ agent :Agent = Agent(
     name='helpful_Assistant',
     instructions="You are a helpful assistant that can answer questions and perform tasks.",
     model=model,
-    model_settings=ModelSettings(temperature=1),
+    model_settings=ModelSettings(
+                temperature=0.8, 
+                tool_choice="required", # tool_choice -> required, auto, none
+                max_tokens=300,
+                # parallel_tool_calls=True
+                ), 
     tools=[get_weather, web_search, get_current_time],
     tool_use_behavior=StopAtTools(stop_at_tool_names=["get_weather", "web_search"]) # run_llm_again , stop_on_first_tool, StopAtTools(stop_at_tool_names=["your_tool"])
 )

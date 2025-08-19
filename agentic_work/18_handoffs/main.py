@@ -54,7 +54,7 @@ support_agent: Agent = Agent(
 
 def agent_instructions(wrapper: RunContextWrapper[Products] , agent: Agent) -> str:
     """Provide instructions for the main agent."""
-    print(f"Context products: {wrapper.context.products}")
+    print(f"Context products: {wsrapper.context.products}")
     return (
         f"All prouducts are {wrapper.context.products}. "
         f"You can assist users with general inquiries. "
