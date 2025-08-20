@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 from dataclasses import dataclass, field
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -32,6 +33,14 @@ async def get_order_status(wrapper: RunContextWrapper[Products] , order_id: str)
     """ Get the status of an order by its ID."""
     return f"Order {order_id} is currently being processed."
 
+@function_tool(is_enabled=True, name_override="all_products" , description_override='Get all available products')
+async def get_product_details(wrapper: RunContextWrapper[Products] , product_name: str) -> str:
+    """ Get details about a specific product."""
+    if product_name in wrapper.context.products:
+        return f"Details for {product_name}: This is a great product."
+    else:
+        return f"Product {product_name} not found."
+
 order_tracking_agent: Agent = Agent(
     name="Order Tracking Agent",
     instructions="You are an order tracking assistant. You can help users track their orders.",
@@ -42,29 +51,38 @@ order_tracking_agent: Agent = Agent(
 product_inquiry_agent: Agent = Agent(
     name="Product Inquiry Agent",
     instructions="Answer questions about products details , specifications  and their availability.",
-    model=model
+    model=model,
+    tools=[get_product_details]
 )
 
 support_agent: Agent = Agent(
     name="Support Agent",
-    instructions="You are a support agent. You can assist users with general inquiries.",
+    instructions="You are a support agent. You can assist users with general questions about products and ecommerce.",
     model=model,
 )
 
 
+
 def agent_instructions(wrapper: RunContextWrapper[Products] , agent: Agent) -> str:
     """Provide instructions for the main agent."""
-    print(f"Context products: {wsrapper.context.products}")
+    print(f"Context products: {wrapper.context.products}")
     return (
         f"All prouducts are {wrapper.context.products}. "
         f"You can assist users with general inquiries. "
         f"Your name is {agent.name}. "
+)
 
-    )
 
+class EscilationData(BaseModel):
+    reason: str
+    order_id: str
 
-all_products = ["Watch", "Phone", "Laptop", "Tablet" , "Headphones" , "Charger " , "Camera" , "Speaker" , "Monitor" , "Keyboard"]
-product = Products(products=all_products)
+product = Products()
+
+def handoff_event(ctx: RunContextWrapper[Products] , input_data: EscilationData) -> str:
+    print("\n On Handoff event: Context = " , ctx.context.products)
+    print(f"\n Escilation order ID: {input_data.order_id}, Reason: {input_data.reason}")
+
 
 async def main()->None:
 
@@ -72,7 +90,29 @@ async def main()->None:
         name="Main Agent",
         instructions=agent_instructions,
         model=model,
-        handoffs=[handoff(support_agent) , handoff(order_tracking_agent) , handoff(product_inquiry_agent)],
+        handoffs=[
+            handoff(
+                agent=support_agent,
+                tool_name_override="product_support_agent",
+                tool_description_override="Assist with general products, eccomerce and support issues.",
+                on_handoff=handoff_event,
+                input_type=EscilationData
+            ), 
+            handoff(
+                agent=order_tracking_agent,
+                tool_name_override="order_tracking_agent",
+                tool_description_override="Assist with order tracking issues.",
+                on_handoff=handoff_event,
+                input_type=EscilationData
+            ), 
+            handoff(
+                agent=product_inquiry_agent,
+                tool_name_override="product_details_agent",
+                tool_description_override="Assist with product inquiries and details.",
+                on_handoff=handoff_event,
+                input_type=EscilationData
+            )
+        ],
     )
 
     result : Runner = await Runner.run(
@@ -81,7 +121,8 @@ async def main()->None:
         context=product
     )
 
-    print(result.final_output)
+    print("\n\n LLM Response " , result.final_output)
+    print("\nLast Agent Name " ,result.last_agent.name)
 
 
 asyncio.run(main())
