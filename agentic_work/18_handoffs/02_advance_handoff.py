@@ -61,7 +61,8 @@ agent: Agent = Agent(
 result: Runner = Runner.run_sync(
     agent,
     "What the hot technology in IT industry right now?",
-    run_config=run_config
+    run_config=run_config,
+    max_turns=15
 )
 
 
