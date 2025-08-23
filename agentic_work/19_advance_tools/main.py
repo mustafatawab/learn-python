@@ -5,7 +5,7 @@ import asyncio
 import os
 from agents.run import RunConfig
 from dataclasses import dataclass
-
+from pydantic import BaseModel
 # Load environment variables from .env file
 load_dotenv()
 
@@ -24,7 +24,7 @@ model = OpenAIChatCompletionsModel(
 )
 
 @dataclass
-class UserScope:
+class UserScope(BaseModel):
     is_admin: bool
 
 

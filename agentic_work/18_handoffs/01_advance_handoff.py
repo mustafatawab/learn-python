@@ -75,13 +75,13 @@ def agent_instructions(wrapper: RunContextWrapper[Products] , agent: Agent) -> s
 
 class EscilationData(BaseModel):
     reason: str
-    order_id: str
+    topic: str
 
 product = Products()
 
 def handoff_event(ctx: RunContextWrapper[Products] , input_data: EscilationData) -> str:
     print("\n On Handoff event: Context = " , ctx.context.products)
-    print(f"\n Escilation order ID: {input_data.order_id}, Reason: {input_data.reason}")
+    print(f"\n Escilation  {input_data}")
 
 
 async def main()->None:
