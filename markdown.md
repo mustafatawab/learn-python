@@ -11,6 +11,7 @@ Heading Level 1
 
 heading level 2
 ---------------
+
  
 
 Normally Paragraph can be written this.
@@ -44,7 +45,9 @@ ___bold with italic___ This is not best practice
 
 >> Nested Blockquote
 
->>>>> More nested
+>>> More nested
+
+>>>> More nested
 
 * Bullet Points
     * You can go nested
@@ -62,7 +65,15 @@ ___bold with italic___ This is not best practice
 1. Ordered list item 1
 2. Order list item 2
 3. Order list item 3
+    1. Nested
+    2. nested item2
+        1. More nested
 
+
+
+<ol type='i'>
+    <li>Hello</li>
+</ol>
 
 
 
@@ -208,6 +219,10 @@ __________________________
 ![Open AI Agent SDK](openai_agent_sdk/openai-agent-sdk.png)
 
 
+**clickable**
+[![Open AI Agent SDK](openai_agent_sdk/openai-agent-sdk.png)](openai_agent_sdk/openai-agent-sdk.png)
+
+
 
 
 https://farsightsystems.vercel.app
@@ -225,4 +240,14 @@ We define a reference link like this [Mustafa Tawab][1] is the CEO of [Farsight 
 
 Escape Characters with back slash \
 \*  \-  \******
+
+
+ **table**
+| s.no | name |
+| -----| ----| 
+| 1   | ali |
+| 2   | jaml|  
+| 3   | jaml|  
+| 4   | jaml|  
+| 5   | jaml|  
 
