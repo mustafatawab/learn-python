@@ -181,7 +181,49 @@ Runner.run_sync(agent, "Your message" , max_turns=4)
 
 ```
 
+### Agent as Tool
+- Call another agent like a function
+- The main agent will behave like a **project manager**
+- It is like **putting the caller on mute, asking a colleague for a quick answer, then you reply back to the caller.**
+```python
 
+spanish_agent = Agent(
+    name="Spanish agent",
+    instructions="Translate the user's message to Spanish.",
+    model=ChatCompletionsModel(...)
+)
+
+french_agent = Agent(
+    name="French agent",
+    instructions="Translate the user's message to French.",
+    model=ChatCompletionsModel(...)
+)
+```
+```python
+
+orchestrator = Agent(
+    name="Translator Orchestrator",
+    instructions=(
+        "You are a translation helper. If the user asks for Spanish, "
+        "call translate_to_spanish. If French, call translate_to_french. "
+        "Otherwise, ask which language they want."
+    ),
+    tools=[
+        spanish_agent.as_tool(
+            tool_name="translate_to_spanish",
+            tool_description="Translate the user's message to Spanish."
+        ),
+        french_agent.as_tool(
+            tool_name="translate_to_french",
+            tool_description="Translate the user's message to French."
+        ),
+    ],
+)
+
+
+
+
+```
 
 ### Handoffs
 
@@ -192,11 +234,15 @@ from agents.extensions import handoff_filters
 billing_agent = Agent(name='Billing Agent')
 refund_agent = Agent(name='Refund Agent')
 
+def billing_handoff(wrapper: RunContextWrapper):
+    print("Handoff to the Billing Agent")
+
 general_agent = Agent(
     name='General Agent',
     handoff=[
         handoff(
-            agent=billing_agent, 
+            agent=billing_agent,
+            on_handoff=billing_handoff, 
             tool_name_override="refund_order", 
             tool_description_override="Handles a refund request", 
             is_enabled=True, # this is also callable which means we can pass custom function 
