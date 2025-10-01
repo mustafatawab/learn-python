@@ -7,14 +7,14 @@ uv add openai-agents
 ```
 
 
-### OpenAI Agent SDK Model Configuration
+###  Model Configuration
 * Global Level
 * Run Level
 * Agent Level
 
 **Agent Level**
 ```python
-from agents import Agent, Runner, AsyncOpenAI , OpenAIChatCompletionModel, function_tool , RunConfig, ModelSettings
+from agents import Agent, Runner, AsyncOpenAI , OpenAIChatCompletionModel, ModelSettings
 from dotenv import load_dotenv
 import os
 
@@ -26,7 +26,6 @@ external_client: AsyncOpenAI = AsyncOpenAI(
     base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
 
 )
-
 
 
 model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
@@ -42,28 +41,9 @@ config: RunConfig = RunConfig(
 )
 
 
-@function_tool
-def math_problem(problem: str) -> str:
-    """ Solving Math and Programming problems """
-    print(f"[TOOL CALLING] {problem}")
-    return f"Your Problem is {problem} very complicated"
-
-
-
-
-
-agent: Agent = Agent(
-    name="problem_solver"
-    instructions="You are a problem solver"
-    model=model
-    tools=[math_problem]
-)
-
-
 run: Runner = Runner.run_sync(
     agent,
     "HI, Can you please solve this (2/2*1000+90) ? ",
-    config=config
 )
 
 
@@ -126,3 +106,7 @@ result = Runner.run_sync(agent, "Hello")
 
 print(result.final_output)
 ```
+
+
+
+
