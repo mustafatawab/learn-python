@@ -6,3 +6,12 @@ __pycache
 ./*/.env
 ./.env
 .env
+
+
+
+./agentic_work/*/.venv
+./agentic_work/*/.env
+./agentic_work/*/.chainlit/
+./agentic_work/*/__pycache__
+./agentic_work/*/.files/
+
