@@ -1,14 +1,67 @@
 import chainlit as cl
-from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, RunConfig
+from agents import Agent, Runner, AsyncOpenAI, OpenAIChatCompletionsModel, RunConfig, SQLiteSession
+from dotenv import load_dotenv
+import os
+from typing import cast
+
+
+load_dotenv()
+
+gemini_api_key: str = os.environ.get("GEMINI_API_KEY")
+if not gemini_api_key:
+    raise ValueError("GEMINI API KEY is not yet set properly..... ")
+
+@cl.on_chat_start
+async def chat_start():
+
+    client = AsyncOpenAI(
+        api_key=gemini_api_key,
+        base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    )
+
+    model = OpenAIChatCompletionsModel(
+        model='gemini-2.5-flash',
+        openai_client=client
+    )
+
+    agent = Agent(
+        name='general_assistant',
+        instructions='You are general assistant.',
+        model=model
+    )
+
+    cl.user_session.set("agent" , agent)
+    cl.user_session.set("chat_history" , [])
+
+
 
 @cl.on_message
 async def main(message: cl.Message):
-    await cl.Message(content=f"Recieved {message.content}").send()
+
+    msg = cl.Message(content="")
+    await msg.send()
+
+    agent: Agent = cast(Agent, cl.user_session.get("agent"))
+    
+    history = cl.user_session.get("chat_history") or []
+
+    history.append(
+        {"role" : "user", "content" : message.content}
+    )
+
+    result = Runner.run_sync(
+        agent,
+        history
+    )
+
+    msg.content = result.final_output
+    await msg.send()
 
 
+    cl.user_session.set("chat_history" , result.to_input_list())
 
-@cl.on_chat_start
-async def start():
+# @cl.on_chat_start
+# async def start():
     #Reference: https://ai.google.dev/gemini-api/docs/openai
     # external_client = AsyncOpenAI(
     #     api_key=gemini_api_key,
@@ -33,4 +86,4 @@ async def start():
     # agent: Agent = Agent(name="Assistant", instructions="You are a helpful assistant", model=model)
     # cl.user_session.set("agent", agent)
 
-    await cl.Message(content="Welcome to the Panaversity AI Assistant! How can I help you today?").send()
+    # await cl.Message(content="Welcome to the Panaversity AI Assistant! How can I help you today?").send()
