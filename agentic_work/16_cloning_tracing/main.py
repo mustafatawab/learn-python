@@ -25,6 +25,12 @@ llm_model: OpenAIChatCompletionsModel = OpenAIChatCompletionsModel(
 def get_current_time() -> str:
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+
+@function_tool
+async def get_weather(city: str) -> str:
+    """ Use this tool for the weather information """
+    return f"The weather in {city} is too cold"
+
 base_agent: Agent = Agent(
     name="base_agent",
     model=llm_model,
@@ -36,27 +42,35 @@ base_agent: Agent = Agent(
 )
 
 
-
 cloned_agent = base_agent.clone(
     name="cloned_agent",
-    model_settings=ModelSettings(temperature=0.1)
+    model_settings=ModelSettings(temperature=0.1),
+    tools=[]
+    
 )
 
+base_agent.tools.append(get_weather)
 
-result: Runner = Runner.run_sync(
-    base_agent,
-    "Hi, What is your name and how you feel today? also lemme know What is current time"
-)
+print("Base Agent Tools " , len(base_agent.tools))
+print("Clone Agent Tools " , len(cloned_agent.tools))
 
-result1: Runner = Runner.run_sync(
-    cloned_agent,
-    "Hi, What is your name and how you feel today? also lemme know What is current time. "
-)
 
-print("-----------------")
-print(result.final_output)
-print("-----------------")
-print(result1.final_output)
-print("-----------------")
+
+
+# result: Runner = Runner.run_sync(
+#     base_agent,
+#     "Hi, What is your name and how you feel today? also lemme know What is current time"
+# )
+
+# result1: Runner = Runner.run_sync(
+#     cloned_agent,
+#     "Hi, What is your name and how you feel today? also lemme know What is current time. "
+# )
+
+# print("-----------------")
+# print(result.final_output)
+# print("-----------------")
+# print(result1.final_output)
+# print("-----------------")
 # print(base_agent.tools[0].name)
 # print(cloned_agent.tools[0].name)
