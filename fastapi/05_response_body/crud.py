@@ -11,13 +11,21 @@ class Item(BaseModel):
     price : float
     description: Optional[str] = None
 
+class ItemCreate(BaseModel):
+    id: int
+    name: str
+    description : Optional[str] = None
+
 
 items_db: list[Item] = []
 
 
 @app.post("/items/", response_model=Item)
-async def create_item(item: Item):
-    items_db.append(item)
+async def create_item(item: ItemCreate):
+    new_item = Item(id=len(items_db) + 1, **item.model_dump())
+    items_db.append(new_item)
+    print("Item Added  ", new_item )
+    print("\n All Items  ", items_db)
     return item
 
 
