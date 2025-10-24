@@ -30,15 +30,18 @@ run_config: RunConfig = RunConfig(
 
 @function_tool
 def get_weather(city: str) -> str:
-    return "Calling weather function about " + city
+    """ Use this tool for the weather information """
+    return f"The weatheri in {city} is 22 C"
 
-class NewsRequest(BaseModel):
-    topic: str
-    reason: str
+class WeatherRequest(BaseModel):
+    location: str
+    temperature : str
+    extra_info : dict | None = None
 
-def on_news_transfer(ctx: RunContextWrapper , input_data:NewsRequest):
-    print("transferring to News Agent : Input Data" , input_data)
 
+
+def on_weather_transfer(context: RunContextWrapper , input : WeatherRequest):
+    print("\n Handoff to the weather agent \n" , input)
 
 
 search_agent: Agent = Agent(
@@ -46,21 +49,22 @@ search_agent: Agent = Agent(
     instructions='You are search agent. You search the user query get nice response in a short way.'
 )
 
-news_agent: Agent = Agent(
-    name='news_agent',
-    instructions='You get latest news about Tech community.'
+weather_agent: Agent = Agent(
+    name='weather_agent',
+    instructions='You are weather agent and responsible only for the weather information.',
+    tools=[get_weather]
 )
 
 agent: Agent = Agent(
     name='orchestrator',
-    instructions='You are orchestor and you have the control over all agent. You itself will not response the user but transefer to the other agents.',
-    handoffs=[handoff(agent=news_agent, on_handoff=on_news_transfer , input_type=NewsRequest) , handoff(search_agent)]
+    instructions='You are helpful assistant. Always transfer the user query to weather_agent for the weather query and search_agent for the searching ',
+    handoffs=[handoff(weather_agent, on_handoff=on_weather_transfer) , handoff(search_agent)]
 )
 
 
 result: Runner = Runner.run_sync(
     agent,
-    "What the hot technology in IT industry right now?",
+    "Hi, what is the weather in Karachi",
     run_config=run_config,
     max_turns=15
 )
