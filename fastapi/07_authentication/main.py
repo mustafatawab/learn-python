@@ -1,6 +1,8 @@
-def main():
-    print("Hello from 07-authentication!")
+from fastapi import FastAPI, Depends, Session
+from sqlmodel import SQLModel, select, create_engine
 
 
-if __name__ == "__main__":
-    main()
+app = FastAPI(title="Todo App")
+
+
+
