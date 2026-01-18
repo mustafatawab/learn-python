@@ -3,7 +3,11 @@ from models.user import User as UserTable
 from schema.user import UserCreate, UserLogin, UserReponse
 from db import get_session
 from sqlmodel import Session,select
-from core.security import hash_password, verify_password
+from core.security import hash_password, verify_password, create_access_token
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/signin")
+print("OAuth 2 Scheme  =  " , oauth2_scheme)
 
 router = APIRouter(
     prefix="/auth",
@@ -17,7 +21,7 @@ async def user_health_check():
 
 
 @router.post("/signup", response_model=UserReponse)
-async def register_user(user: UserCreate, session: Session = Depends(get_session)):
+async def register_user(user: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     existing_user = session.exec(select(UserTable).where(UserTable.email == user.email or UserTable.username == user.username)).first()
     if existing_user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email or username already exists")
@@ -39,4 +43,8 @@ async def signin(user: UserLogin, session: Session = Depends(get_session)):
     if check_user:
         check_password = verify_password(user.password , check_user.password)
         if check_password:
-            pass
+            token = create_access_token({"username" : user.username})
+            return {"token_type" : "bearer" , "token" : token}
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Password is incorrect")
+    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User does not exists")
+
