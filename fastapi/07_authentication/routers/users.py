@@ -5,9 +5,7 @@ from db import get_session
 from sqlmodel import Session,select
 from core.security import hash_password, verify_password, create_access_token, decode_token
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/signin")
-print("OAuth 2 Scheme  =  " , oauth2_scheme)
+from core.dependency import get_current_user
 
 router = APIRouter(
     prefix="/auth",
@@ -15,27 +13,6 @@ router = APIRouter(
 )
 
 
-
-
-async def get_current_user(token: str = Depends(oauth2_scheme), session: Session = Depends(get_session)):
-    credential_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate" : "Bearer"}
-    )
-
-    payload = decode_token(token)
-    if payload is None:
-        raise credential_exception
-
-    username: str = payload.get("username")
-
-    user = session.exec(select(UserTable).where(UserTable.username == username)).first()
-
-    if user is None:
-        raise credential_exception
-    
-    return user
 
 
 
